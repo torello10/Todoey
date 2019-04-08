@@ -8,8 +8,9 @@
 
 import UIKit
 import RealmSwift
+import SwipeCellKit
 
-class CategoryViewController: UITableViewController {
+class CategoryViewController: SwipeTableViewController {
     
     
     
@@ -20,6 +21,8 @@ class CategoryViewController: UITableViewController {
         super.viewDidLoad()
         
         loadCategories()
+        
+        
 
     }
 
@@ -29,7 +32,7 @@ class CategoryViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         let category = categoryArray?[indexPath.row]
         
@@ -114,6 +117,24 @@ class CategoryViewController: UITableViewController {
         
         tableView.reloadData()
    }
+  
     
+    //MARK: - Delete Data From Swipe
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let category = self.categoryArray?[indexPath.row] {
+            do{
+               try self.realm.write {
+                   self.realm.delete(category)
+               }
+            }catch {
+                print("Error deleting context \(error)")
+            }
+        }
+    }
+
 }
+
+
+
 
